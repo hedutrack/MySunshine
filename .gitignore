@@ -1,0 +1,16 @@
+/app/proguard-rules.pro
+/app/build
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+/.idea
+/gradle.properties
+
+/MySunshine.iml
+/gradlew.bat
+/gradlew
+/app/app.iml
