@@ -17,8 +17,6 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment
 {
-
-
     public MainActivityFragment ()
     {
     }
