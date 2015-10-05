@@ -62,7 +62,11 @@ public class MainActivityFragment extends Fragment
                 "Monday"
         };
 
-        //String forecast = getData ("http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7");
+        /*
+        This is kind of ugly.  FetchWeatherTask is started, and in the meantime, the adapter is
+        populated with dummy data, but then in FetchWeatherTask the adapter is refreshed with
+        real data.  Smells like timing issues to me.
+         */
         new FetchWeatherTask ().execute ("30655");
 
         List<String> daysList = new ArrayList<String> (Arrays.asList (days));
