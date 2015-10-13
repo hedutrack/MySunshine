@@ -1,5 +1,6 @@
 package com.hayseed.mysunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.AsyncTask;
@@ -13,8 +14,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -73,10 +76,22 @@ public class MainActivityFragment extends Fragment
 
         View rootView = inflater.inflate (R.layout.fragment_main, container, false);
 
-        adapter = new ArrayAdapter (getActivity (), R.layout.list_item_forecast, R.id.list_item_forecast_textview, daysList);
+        adapter = new ArrayAdapter<String> (getActivity (), R.layout.list_item_forecast, R.id.list_item_forecast_textview, daysList);
 
         ListView listView = (ListView) rootView.findViewById (R.id.list_view_forecast);
         listView.setAdapter (adapter);
+
+        listView.setOnItemClickListener (new AdapterView.OnItemClickListener ()
+        {
+            @Override
+            public void onItemClick (AdapterView<?> parent, View view, int position, long id)
+            {
+                String forecast = (String) adapter.getItem (position);
+                Intent intent = new Intent (getActivity (), DetailActivity.class);
+                intent.putExtra ("data", forecast);
+                getActivity ().startActivity (intent);
+            }
+        });
         return rootView;
         //return inflater.inflate (R.layout.fragment_main, container, false);
     }
@@ -201,7 +216,8 @@ public class MainActivityFragment extends Fragment
                     .appendPath ("daily")
                     .appendQueryParameter ("q", params[0])
                     .appendQueryParameter ("units", "metric")
-                    .appendQueryParameter ("cnt", "7");
+                    .appendQueryParameter ("cnt", "7")
+                    .appendQueryParameter ("APPID", "ef9bdcc2ae5628da5e466596904253e5");
 
             String url = uri.build ().toString ();
 
@@ -225,6 +241,12 @@ public class MainActivityFragment extends Fragment
         @Override
         protected void onPostExecute (String[] strings)
         {
+            if (strings == null)
+            {
+                Toast.makeText (getContext (), "null weather strings", Toast.LENGTH_LONG).show ();
+                return;
+            }
+
             super.onPostExecute (strings);
 
             parsedWeather = strings;

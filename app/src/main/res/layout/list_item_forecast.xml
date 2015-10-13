@@ -5,6 +5,6 @@
           android:minHeight="?android:attr/listPreferredItemHeight"
           android:id="@+id/list_item_forecast_textview"
           android:gravity="center_vertical"
-          android:editable="true">
+          android:editable="false">
 
 </TextView>

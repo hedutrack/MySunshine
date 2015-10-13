@@ -2,6 +2,7 @@ package com.hayseed.mysunshine;
 
 import android.text.format.Time;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +61,12 @@ public class WeatherDataParser
         final String OWM_MAX         = "max";
         final String OWM_MIN         = "min";
         final String OWM_DESCRIPTION = "main";
+
+        if (forecastJsonStr == null)
+        {
+            Log.d (TAG, "null forecast string");
+            return null;
+        }
 
         JSONObject forecastJson = new JSONObject (forecastJsonStr);
         JSONArray  weatherArray = forecastJson.getJSONArray (OWM_LIST);
