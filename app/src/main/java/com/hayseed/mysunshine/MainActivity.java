@@ -2,6 +2,7 @@ package com.hayseed.mysunshine;
 
 import android.content.Intent;
 import android.media.audiofx.BassBoost;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,7 +52,22 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        if (id == R.id.action_map)
+        {
+            Uri uriLocation = Uri.parse ("geo:0,0?q=30655");
+
+            Intent intent = new Intent (Intent.ACTION_VIEW);
+            intent.setData (uriLocation);
+            if (intent.resolveActivity (getPackageManager ()) != null)
+            {
+                startActivity (intent);
+            }
+
+            return true;
+        }
+
         return super.onOptionsItemSelected (item);
+
     }
 
     /**

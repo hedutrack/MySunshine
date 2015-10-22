@@ -1,9 +1,11 @@
 package com.hayseed.mysunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -37,7 +39,7 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment
 {
-    private String [] parsedWeather;
+    private String[]     parsedWeather;
     private ArrayAdapter adapter;
 
     public MainActivityFragment ()
@@ -56,27 +58,9 @@ public class MainActivityFragment extends Fragment
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState)
     {
-        String[] days = {
-                "Today",
-                "Thursday",
-                "Friday",
-                "Saturday",
-                "Sunday",
-                "Monday"
-        };
-
-        /*
-        This is kind of ugly.  FetchWeatherTask is started, and in the meantime, the adapter is
-        populated with dummy data, but then in FetchWeatherTask the adapter is refreshed with
-        real data.  Smells like timing issues to me.
-         */
-        new FetchWeatherTask ().execute ("30655");
-
-        List<String> daysList = new ArrayList<String> (Arrays.asList (days));
+        adapter = new ArrayAdapter<String> (getActivity (), R.layout.list_item_forecast, R.id.list_item_forecast_textview, new ArrayList<String> ());
 
         View rootView = inflater.inflate (R.layout.fragment_main, container, false);
-
-        adapter = new ArrayAdapter<String> (getActivity (), R.layout.list_item_forecast, R.id.list_item_forecast_textview, daysList);
 
         ListView listView = (ListView) rootView.findViewById (R.id.list_view_forecast);
         listView.setAdapter (adapter);
@@ -87,7 +71,7 @@ public class MainActivityFragment extends Fragment
             public void onItemClick (AdapterView<?> parent, View view, int position, long id)
             {
                 String forecast = (String) adapter.getItem (position);
-                Intent intent = new Intent (getActivity (), DetailActivity.class);
+                Intent intent   = new Intent (getActivity (), DetailActivity.class);
                 intent.putExtra ("data", forecast);
                 getActivity ().startActivity (intent);
             }
@@ -109,12 +93,22 @@ public class MainActivityFragment extends Fragment
         switch (item.getItemId ())
         {
             case R.id.action_refresh:
-                new FetchWeatherTask ().execute ("30655");
+                //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (getContext ());
+                //String location = prefs.getString (getString (R.string.pref_location_key), "");
+                //new FetchWeatherTask ().execute (location);
+                updateWeather ();
                 return true;
 
             default:
                 return super.onOptionsItemSelected (item);
         }
+    }
+
+    @Override
+    public void onStart ()
+    {
+        super.onStart ();
+        updateWeather ();
     }
 
     private String getData (String urlString)
@@ -196,6 +190,15 @@ public class MainActivityFragment extends Fragment
         return forecastJsonStr;
     }
 
+    private void updateWeather ()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (getContext ());
+        String location = prefs.getString (getString (R.string.pref_location_key), getString (R.string.pref_location_default));
+        String units = prefs.getString (getString (R.string.pref_units_key), getString (R.string.pref_units_default));
+
+        new FetchWeatherTask ().execute (location);
+    }
+
     // "http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
 
     private class FetchWeatherTask extends AsyncTask<String, Void, String[]>
@@ -214,8 +217,8 @@ public class MainActivityFragment extends Fragment
                     .appendPath ("2.5")
                     .appendPath ("forecast")
                     .appendPath ("daily")
-                    .appendQueryParameter ("q", params[0])
-                    .appendQueryParameter ("units", "metric")
+                    .appendQueryParameter ("zip", params[0])
+                    .appendQueryParameter ("units", "imperial")
                     .appendQueryParameter ("cnt", "7")
                     .appendQueryParameter ("APPID", "ef9bdcc2ae5628da5e466596904253e5");
 
