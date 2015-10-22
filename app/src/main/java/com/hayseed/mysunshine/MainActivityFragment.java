@@ -199,8 +199,6 @@ public class MainActivityFragment extends Fragment
         new FetchWeatherTask ().execute (location);
     }
 
-    // "http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
-
     private class FetchWeatherTask extends AsyncTask<String, Void, String[]>
     {
         private String[] weatherData;
@@ -212,7 +210,6 @@ public class MainActivityFragment extends Fragment
             if (params.length == 0) return null;
 
             Uri.Builder uri = new Uri.Builder ();
-            //uri.scheme ("http").authority ("api.openweathermap.org").appendPath ("data").appendPath ("2.5").appendPath ("forecast").appendPath ("daily?q=94043&mode=json&units=metric&cnt=7");
             uri.scheme ("http").authority ("api.openweathermap.org").appendPath ("data")
                     .appendPath ("2.5")
                     .appendPath ("forecast")
@@ -257,6 +254,5 @@ public class MainActivityFragment extends Fragment
             adapter.addAll (strings);
             //adapter.notifyDataSetChanged ();
         }
-
     }
 }
