@@ -253,7 +253,6 @@ public class MainActivityFragment extends Fragment
             parsedWeather = strings;
             adapter.clear ();
             adapter.addAll (strings);
-            //adapter.notifyDataSetChanged ();
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.hayseed.mysunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.audiofx.BassBoost;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,9 +54,18 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        /*
+            Menu option Show Location
+         */
         if (id == R.id.action_map)
         {
-            Uri uriLocation = Uri.parse ("geo:0,0?q=30655");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (this);
+            String location = prefs.getString (getString (R.string.pref_location_key), getString (R.string.pref_location_default));
+
+            //Uri uriLocation = Uri.parse ("geo:0,0?q=30655");
+            Uri uriLocation = Uri.parse ("geo:0,0?").buildUpon ()
+                    .appendQueryParameter ("q", location)
+                    .build ();
 
             Intent intent = new Intent (Intent.ACTION_VIEW);
             intent.setData (uriLocation);
